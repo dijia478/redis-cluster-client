@@ -18,5 +18,17 @@ redis:
     - 10.100.93.44:6384
     - 10.100.93.44:6385
     - 10.100.93.44:6386
+
+# 日志配置文件路径
 logging:
   config: config/log4j2.xml
+
+# 优雅停机
+management:
+  security:
+    enabled: false
+  address: 127.0.0.1
+  port: 8556
+endpoints:
+  shutdown:
+    enabled: true

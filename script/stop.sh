@@ -4,7 +4,7 @@
 PACKAGE_NAME=redis5-0.0.1-SNAPSHOT.jar
 
 # 进程的管理端口
-MANAGEMENT_PORT=8094
+MANAGEMENT_PORT=8556
 
 # 平滑停止和强制停止之前的时间间隔，单位秒
 SLEEP_TIME=5
