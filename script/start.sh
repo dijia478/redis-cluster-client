@@ -22,7 +22,7 @@ MAX_PROCESS_LOG=3
 PROCESS_LOG_PREFIX=redis5
 
 # JVM内存参数
-JAVA_OPTS=" -Xms1g -Xmx1g -Xmn1g -Xss256k -XX:PermSize=128m -XX:MaxPermSize=256m "
+JAVA_OPTS=" -Xms3g -Xmx3g -Xmn1g -Xss256k -XX:PermSize=128m -XX:MaxPermSize=256m "
 
 function set_java_opts() {
     JAVA_OPTS=" -server ${JAVA_OPTS} \
