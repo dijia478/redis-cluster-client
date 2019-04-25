@@ -1,0 +1,22 @@
+server:
+  port: 8555
+spring:
+  application:
+    name: redis5
+redis:
+  maxTotal: 20 # 最大连接数
+  maxIdle: 20 # 最大空闲连接数
+  minIdle: 0 # 最小空闲连接数
+  connectionTimeout: 5000 # 连接超时时间
+  soTimeout: 10000 # 读取超时时间
+  maxAttempts: 1 # 最大尝试次数
+  passWord: admin # redis密码
+  servers:
+    - 10.100.93.44:6381
+    - 10.100.93.44:6382
+    - 10.100.93.44:6383
+    - 10.100.93.44:6384
+    - 10.100.93.44:6385
+    - 10.100.93.44:6386
+logging:
+  config: config/log4j2.xml

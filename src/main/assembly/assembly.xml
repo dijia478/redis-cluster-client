@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly>
+    <id>bin</id>
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+    <fileSets>
+        <fileSet>
+            <directory>config</directory>
+            <outputDirectory>/config</outputDirectory>
+            <includes>
+                <include>application.yml</include>
+                <include>log4j2.xml</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>script</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>start.sh</include>
+                <include>stop.sh</include>
+                <include>restart.sh</include>
+            </includes>
+            <fileMode>0755</fileMode>
+        </fileSet>
+        <fileSet>
+            <directory>target</directory>
+            <outputDirectory>/lib</outputDirectory>
+            <includes>
+                <include>redis5*.jar</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+
+    <!-- 这里会打包所有的依赖，如果注释掉就不打包依赖 -->
+    <dependencySets>
+        <dependencySet>
+            <useProjectArtifact>true</useProjectArtifact>
+            <outputDirectory>lib</outputDirectory>
+            <fileMode>0600</fileMode>
+        </dependencySet>
+    </dependencySets>
+
+</assembly>

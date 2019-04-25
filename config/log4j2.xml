@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO" monitorInterval="60">
+    <properties>
+        <property name="LOG_HOME">logs</property>
+        <property name="FILE_NAME">redis</property>
+        <property name="log.sql.level">info</property>
+    </properties>
+
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %l - %msg%n"/>
+        </Console>
+
+        <RollingRandomAccessFile
+            name="allLog"
+            fileName="${LOG_HOME}/${FILE_NAME}.log"
+            filePattern="${LOG_HOME}/${FILE_NAME}-%d{yyyy-MM-dd}_%i.log.gz">
+            <ThresholdFilter level="ALL" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout charset="UTF-8" pattern="%d{HH:mm:ss.SSS} [%t] %-5level %l - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="50"/>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile
+            name="errorLog"
+            fileName="${LOG_HOME}/${FILE_NAME}-error.log"
+            filePattern="${LOG_HOME}/${FILE_NAME}-error-%d{yyyy-MM-dd}_%i.log.gz">
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout charset="UTF-8" pattern="%d{HH:mm:ss.SSS} [%t] %-5level %l - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="50"/>
+        </RollingRandomAccessFile>
+
+    </Appenders>
+
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="allLog"/>
+            <AppenderRef ref="errorLog"/>
+        </Root>
+
+        <Logger name="cn.dijia478.redis5.redis.impl" level="${log.sql.level}" additivity="false">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="allLog"/>
+            <AppenderRef ref="errorLog"/>
+        </Logger>
+
+    </Loggers>
+
+</Configuration>
