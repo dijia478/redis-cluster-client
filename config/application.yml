@@ -25,10 +25,13 @@ logging:
 
 # 优雅停机
 management:
-  security:
-    enabled: false
-  address: 127.0.0.1
-  port: 8556
-endpoints:
-  shutdown:
-    enabled: true
+  server:
+    port: 8556
+    address: 127.0.0.1
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    shutdown:
+      enabled: true

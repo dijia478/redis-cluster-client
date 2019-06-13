@@ -24,4 +24,7 @@ public class RedisDTO {
     @ApiModelProperty(value = "value")
     private String value;
 
+    @ApiModelProperty(value = "循环次数")
+    private Integer counts;
+
 }

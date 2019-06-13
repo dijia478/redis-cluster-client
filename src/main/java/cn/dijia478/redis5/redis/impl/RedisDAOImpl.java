@@ -2,7 +2,6 @@ package cn.dijia478.redis5.redis.impl;
 
 import cn.dijia478.redis5.redis.RedisDAO;
 import java.util.Map;
-import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -27,7 +26,7 @@ public class RedisDAOImpl implements RedisDAO {
         String set = null;
         try {
             set = jc.set(key, value);
-            log.info("[logId:{}] SET redis key: {}, value: {}, result: {}", logId, key, value, set);
+            log.debug("[logId:{}] SET redis key: {}, value: {}, result: {}", logId, key, value, set);
         } catch (Exception e) {
             log.error("[logId:{}] SET redis key: {}, value: {}", logId, key, value, e);
         }
@@ -39,7 +38,7 @@ public class RedisDAOImpl implements RedisDAO {
         String get = null;
         try {
             get = jc.get(key);
-            log.info("[logId:{}] GET redis key: {}, result: {}", logId, key, get);
+            log.debug("[logId:{}] GET redis key: {}, result: {}", logId, key, get);
         } catch (Exception e) {
             log.error("[logId:{}] GET redis key: {}", logId, key, e);
         }
@@ -51,7 +50,7 @@ public class RedisDAOImpl implements RedisDAO {
         Long del = null;
         try {
             del = jc.del(key);
-            log.info("[logId:{}] DEL redis key: {}, result: {}", logId, key, del);
+            log.debug("[logId:{}] DEL redis key: {}, result: {}", logId, key, del);
         } catch (Exception e) {
             log.error("[logId:{}] DEL redis key: {}", logId, key, e);
         }
@@ -63,7 +62,7 @@ public class RedisDAOImpl implements RedisDAO {
         Long hset = null;
         try {
             hset = jc.hset(key, field, value);
-            log.info("[logId:{}] HSET redis key: {}, field: {}, value: {}, result: {}", logId, key, field, value, hset);
+            log.debug("[logId:{}] HSET redis key: {}, field: {}, value: {}, result: {}", logId, key, field, value, hset);
         } catch (Exception e) {
             log.error("[logId:{}] HSET redis key: {}, field: {}, value: {}", logId, key, field, value, e);
         }
@@ -75,7 +74,7 @@ public class RedisDAOImpl implements RedisDAO {
         String hget = null;
         try {
             hget = jc.hget(key, field);
-            log.info("[logId:{}] HGET redis key: {}, field: {}, result: {}", logId, key, field, hget);
+            log.debug("[logId:{}] HGET redis key: {}, field: {}, result: {}", logId, key, field, hget);
         } catch (Exception e) {
             log.error("[logId:{}] HGET redis key: {}, field: {}", logId, key, field, e);
         }
@@ -87,7 +86,7 @@ public class RedisDAOImpl implements RedisDAO {
         Map<String, String> hgetAll = null;
         try {
             hgetAll = jc.hgetAll(key);
-            log.info("[logId:{}] HGETALL redis key: {}, result: {}", logId, key, hgetAll);
+            log.debug("[logId:{}] HGETALL redis key: {}, result: {}", logId, key, hgetAll);
         } catch (Exception e) {
             log.error("[logId:{}] HGETALL redis key: {}", logId, key, e);
         }
@@ -99,7 +98,7 @@ public class RedisDAOImpl implements RedisDAO {
         Long hdel = null;
         try {
             hdel = jc.hdel(key, field);
-            log.info("[logId:{}] HDEL redis key: {}, field: {}, result: {}", logId, key, field, hdel);
+            log.debug("[logId:{}] HDEL redis key: {}, field: {}, result: {}", logId, key, field, hdel);
         } catch (Exception e) {
             log.error("[logId:{}] HDEL redis key: {}, field: {}", logId, key, field, e);
         }
