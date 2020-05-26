@@ -79,7 +79,7 @@
 
 	</dependencies>
 
-	<!--spring-boot maven-->
+	<!--spring-boot maven测试-->
 	<build>
 		<resources>
 			<resource>
