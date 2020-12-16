@@ -1,0 +1,2 @@
+# redis-cluster-client
+redis的cluster集群java客户端，提供jedis和lettuce两种方式连接cluster示例
