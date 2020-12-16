@@ -3,29 +3,27 @@ package cn.dijia478.redis5.redis;
 import java.util.Map;
 
 /**
- * 操作redis的DAO层
+ * 使用lettuce操作redis的DAO层
  *
  * @author dijia478
- * @version 1.0
- * @date 2019-4-24 17:32
+ * @date 2020-12-15 17:13
  */
-public interface RedisDAO {
+public interface LettuceDAO {
 
     /**
      * redis中的set方法
      *
      * @param logId 日志id
-     * @param key key
+     * @param key   key
      * @param value value
-     * @return 操作结果
      */
-    String set(String logId, String key, String value);
+    void set(String logId, String key, String value);
 
     /**
      * redis中的get方法
      *
      * @param logId 日志id
-     * @param key key
+     * @param key   key
      * @return 操作结果
      */
     String get(String logId, String key);
@@ -34,46 +32,45 @@ public interface RedisDAO {
      * redis中的del方法
      *
      * @param logId 日志id
-     * @param key key
+     * @param key   key
      * @return 操作结果
      */
-    Long del(String logId, String key);
+    Boolean del(String logId, String key);
 
     /**
      * redis中的hset方法
      *
      * @param logId 日志id
-     * @param key key
+     * @param key   key
      * @param field field
      * @param value value
-     * @return 操作结果
      */
-    Long hset(String logId, String key, String field, String value);
+    void hset(String logId, String key, String field, String value);
 
     /**
      * redis中的hget方法
      *
      * @param logId 日志id
-     * @param key key
+     * @param key   key
      * @param field field
      * @return 操作结果
      */
-    String hget(String logId, String key, String field);
+    Object hget(String logId, String key, String field);
 
     /**
      * redis中的hgetAll方法
      *
      * @param logId 日志id
-     * @param key key
+     * @param key   key
      * @return 操作结果
      */
-    Map<String, String> hgetAll(String logId, String key);
+    Map<Object, Object> hgetAll(String logId, String key);
 
     /**
      * redis中的hdel方法
      *
      * @param logId 日志id
-     * @param key key
+     * @param key   key
      * @param field field
      * @return 操作结果
      */

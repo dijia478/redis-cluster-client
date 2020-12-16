@@ -8,7 +8,6 @@ import lombok.Data;
  * 请求redis操作的参数对象
  *
  * @author dijia478
- * @version 1.0
  * @date 2019-4-25 11:04
  */
 @Data
@@ -23,8 +22,5 @@ public class RedisDTO {
 
     @ApiModelProperty(value = "value")
     private String value;
-
-    @ApiModelProperty(value = "循环次数")
-    private Integer counts;
 
 }

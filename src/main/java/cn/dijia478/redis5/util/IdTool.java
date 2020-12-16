@@ -7,7 +7,6 @@ import java.util.concurrent.ThreadLocalRandom;
  * id生成工具
  *
  * @author dijia478
- * @version 1.0
  * @date 2019-4-25 10:56
  */
 public class IdTool {

@@ -14,7 +14,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * swagger的配置类
  *
  * @author dijia478
- * @version 1.0
  * @date 2019-4-25 11:24
  */
 @Configuration
@@ -24,19 +23,19 @@ public class Swagger2 {
     @Bean
     public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)
-            .apiInfo(apiInfo())
-            .select()
-            .apis(RequestHandlerSelectors.basePackage("cn.dijia478.redis5.controller"))
-            .paths(PathSelectors.any())
-            .build();
+                .apiInfo(apiInfo())
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("cn.dijia478.redis5.controller"))
+                .paths(PathSelectors.any())
+                .build();
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-            .title("redis操作接口文档")
-            .description("这是用来测试redis5-cluster集群的测试接口，可以直接通过接口来操作redis")
-            .version("1.0")
-            .build();
+                .title("redis操作接口文档")
+                .description("这是用来测试redis5-cluster集群的测试接口，可以直接通过接口来操作redis")
+                .version("1.0")
+                .build();
     }
 
 }
