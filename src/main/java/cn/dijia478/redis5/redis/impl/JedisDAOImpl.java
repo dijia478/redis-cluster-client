@@ -1,6 +1,6 @@
 package cn.dijia478.redis5.redis.impl;
 
-import cn.dijia478.redis5.redis.JedisDAO;
+import cn.dijia478.redis5.redis.RedisDAO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -9,28 +9,26 @@ import redis.clients.jedis.JedisCluster;
 import java.util.Map;
 
 /**
- * 操作redis的DAO层实现类，只提供少部分常用的，还需要其他命令可以自己加
+ * 使用jedis操作redis的DAO层实现类，只提供少部分常用的，还需要其他命令可以自己加
  *
  * @author dijia478
  * @date 2019-4-24 17:32
  */
-@Repository
+@Repository("jedisDAOImpl")
 @Slf4j
-public class JedisDAOImpl implements JedisDAO {
+public class JedisDAOImpl implements RedisDAO {
 
     @Autowired
     private JedisCluster jc;
 
     @Override
-    public String set(String logId, String key, String value) {
-        String set = null;
+    public void set(String logId, String key, String value) {
         try {
-            set = jc.set(key, value);
+            String set = jc.set(key, value);
             log.debug("[logId:{}] SET redis key: {}, value: {}, result: {}", logId, key, value, set);
         } catch (Exception e) {
             log.error("[logId:{}] SET redis key: {}, value: {}", logId, key, value, e);
         }
-        return set;
     }
 
     @Override
@@ -46,7 +44,7 @@ public class JedisDAOImpl implements JedisDAO {
     }
 
     @Override
-    public Long del(String logId, String key) {
+    public Boolean del(String logId, String key) {
         Long del = null;
         try {
             del = jc.del(key);
@@ -54,19 +52,17 @@ public class JedisDAOImpl implements JedisDAO {
         } catch (Exception e) {
             log.error("[logId:{}] DEL redis key: {}", logId, key, e);
         }
-        return del;
+        return del != null && del.intValue() == 1;
     }
 
     @Override
-    public Long hset(String logId, String key, String field, String value) {
-        Long hset = null;
+    public void hset(String logId, String key, String field, String value) {
         try {
-            hset = jc.hset(key, field, value);
+            Long hset = jc.hset(key, field, value);
             log.debug("[logId:{}] HSET redis key: {}, field: {}, value: {}, result: {}", logId, key, field, value, hset);
         } catch (Exception e) {
             log.error("[logId:{}] HSET redis key: {}, field: {}, value: {}", logId, key, field, value, e);
         }
-        return hset;
     }
 
     @Override

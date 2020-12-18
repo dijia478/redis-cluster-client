@@ -3,12 +3,12 @@ package cn.dijia478.redis5.redis;
 import java.util.Map;
 
 /**
- * 使用lettuce操作redis的DAO层
+ * redis的DAO层
  *
  * @author dijia478
  * @date 2020-12-15 17:13
  */
-public interface LettuceDAO {
+public interface RedisDAO {
 
     /**
      * redis中的set方法
@@ -55,7 +55,7 @@ public interface LettuceDAO {
      * @param field field
      * @return 操作结果
      */
-    Object hget(String logId, String key, String field);
+    String hget(String logId, String key, String field);
 
     /**
      * redis中的hgetAll方法
@@ -64,7 +64,7 @@ public interface LettuceDAO {
      * @param key   key
      * @return 操作结果
      */
-    Map<Object, Object> hgetAll(String logId, String key);
+    Map<String, String> hgetAll(String logId, String key);
 
     /**
      * redis中的hdel方法
