@@ -5,9 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 使用lettuce操作redis的DAO层实现类，只提供少部分常用的，还需要其他命令可以自己加
@@ -46,7 +50,7 @@ public class LettuceDAOImpl implements RedisDAO {
 
     @Override
     public Boolean del(String logId, String key) {
-        Boolean del = null;
+        Boolean del = false;
         try {
             del = rt.delete(key);
             log.debug("[logId:{}] DEL redis key: {}, result: {}", logId, key, del);
@@ -102,6 +106,31 @@ public class LettuceDAOImpl implements RedisDAO {
             log.error("[logId:{}] HDEL redis key: {}, field: {}", logId, key, field, e);
         }
         return hdel;
+    }
+
+    @Override
+    public Boolean getDistributedLock(String logId, String key, String value, long expireTime) {
+        Boolean set = false;
+        try {
+            set = rt.opsForValue().setIfAbsent(key, value, expireTime, TimeUnit.MILLISECONDS);
+            log.debug("[logId:{}] getLock redis key: {}, value: {}, expireTime: {}, result: {}", logId, key, value, expireTime, set);
+        } catch (Exception e) {
+            log.error("[logId:{}] getLock redis key: {}, value: {}, expireTime: {}", logId, key, value, expireTime, e);
+        }
+        return set;
+    }
+
+    @Override
+    public Boolean releaseDistributedLock(String logId, String key, String value) {
+        Long execute = null;
+        try {
+            RedisScript<Long> redisScript = new DefaultRedisScript<>(RELEASE_LOCK_LUA, Long.class);
+            execute = rt.execute(redisScript, Collections.singletonList(key), value);
+            log.debug("[logId:{}] releaseLock redis key: {}, value: {}, result: {}", logId, key, value, execute);
+        } catch (Exception e) {
+            log.error("[logId:{}] releaseLock redis key: {}, value: {}", logId, key, value, e);
+        }
+        return Long.valueOf(1L).equals(execute);
     }
 
 }

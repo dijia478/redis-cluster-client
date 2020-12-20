@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import redis.clients.jedis.JedisCluster;
+import redis.clients.jedis.params.SetParams;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -99,6 +101,30 @@ public class JedisDAOImpl implements RedisDAO {
             log.error("[logId:{}] HDEL redis key: {}, field: {}", logId, key, field, e);
         }
         return hdel;
+    }
+
+    @Override
+    public Boolean getDistributedLock(String logId, String key, String value, long expireTime) {
+        String set = null;
+        try {
+            set = jc.set(key, value, SetParams.setParams().nx().px(expireTime));
+            log.debug("[logId:{}] getLock redis key: {}, value: {}, expireTime: {}, result: {}", logId, key, value, expireTime, set);
+        } catch (Exception e) {
+            log.error("[logId:{}] getLock redis key: {}, value: {}, expireTime: {}", logId, key, value, expireTime, e);
+        }
+        return "OK".equals(set);
+    }
+
+    @Override
+    public Boolean releaseDistributedLock(String logId, String key, String value) {
+        Object result = null;
+        try {
+            result = jc.eval(RELEASE_LOCK_LUA, Collections.singletonList(key), Collections.singletonList(value));
+            log.debug("[logId:{}] releaseLock redis key: {}, value: {}, result: {}", logId, key, value, result);
+        } catch (Exception e) {
+            log.error("[logId:{}] releaseLock redis key: {}, value: {}", logId, key, value, e);
+        }
+        return Long.valueOf(1L).equals(result);
     }
 
 }

@@ -93,4 +93,24 @@ public class JedisController {
         return hdel;
     }
 
+    @ApiOperation(value = "获取分布式锁（接口负责人：dijia478）")
+    @PostMapping("/redis/jedis/lock/{key}/{value}/{expireTime}")
+    public Boolean getLock(@PathVariable("key") String key, @PathVariable("value") String value, @PathVariable("expireTime") long expireTime) {
+        String logId = IdTool.getId4();
+        log.info("[logId:{}] receive POST request [/redis/jedis/lock/{}/{}/{}]", logId, key, value, expireTime);
+        Boolean lock = redisDAO.getDistributedLock(logId, key, value, expireTime);
+        log.info("[logId:{}] resp: {}", logId, lock);
+        return lock;
+    }
+
+    @ApiOperation(value = "释放分布式锁（接口负责人：dijia478）")
+    @DeleteMapping("/redis/jedis/lock/{key}/{value}")
+    public Boolean getLock(@PathVariable("key") String key, @PathVariable("value") String value) {
+        String logId = IdTool.getId4();
+        log.info("[logId:{}] receive DELETE request [/redis/jedis/lock/{}/{}]", logId, key, value);
+        Boolean lock = redisDAO.releaseDistributedLock(logId, key, value);
+        log.info("[logId:{}] resp: {}", logId, lock);
+        return lock;
+    }
+
 }
