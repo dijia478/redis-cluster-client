@@ -102,7 +102,7 @@ public interface RedisDAO {
 
     /**
      * 分布式限流队列
-     * 本接口实现的方法通过加锁避免并发问题，也可以通过lua脚本的方式重写本接口实现方法
+     * 本接口实现的方法通过加锁避免并发问题，性能不高。后续通过lua脚本的方式重写本接口实现方法
      *
      * @param logId      日志id
      * @param key        key
