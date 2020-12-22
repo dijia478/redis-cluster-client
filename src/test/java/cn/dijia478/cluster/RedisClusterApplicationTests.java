@@ -1,4 +1,4 @@
-package cn.dijia478.redis5;
+package cn.dijia478.cluster;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

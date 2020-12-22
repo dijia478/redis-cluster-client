@@ -1,4 +1,4 @@
-package cn.dijia478.redis5.redis;
+package cn.dijia478.cluster.redis;
 
 import java.util.Map;
 
@@ -82,9 +82,9 @@ public interface RedisDAO {
     /**
      * 获取分布式锁
      *
-     * @param logId 日志id
-     * @param key key
-     * @param value value，需要保证全局唯一，用来删除分布式锁时判断身份使用
+     * @param logId      日志id
+     * @param key        key
+     * @param value      value，需要保证全局唯一，用来删除分布式锁时判断身份使用
      * @param expireTime 锁过期时间，毫秒，防止业务崩溃未删除锁，导致死锁
      * @return 是否获取成功锁
      */
@@ -94,7 +94,7 @@ public interface RedisDAO {
      * 释放分布式锁
      *
      * @param logId 日志id
-     * @param key key
+     * @param key   key
      * @param value value，需要和获取锁时传入的一致
      * @return 是否释放成功锁
      */
@@ -104,9 +104,9 @@ public interface RedisDAO {
      * 分布式限流队列
      * 本接口实现的方法通过加锁避免并发问题，也可以通过lua脚本的方式重写本接口实现方法
      *
-     * @param logId 日志id
-     * @param key key
-     * @param count 限流阀值
+     * @param logId      日志id
+     * @param key        key
+     * @param count      限流阀值
      * @param timeWindow 限流时间窗口
      * @return 在时间窗口内（包含该时间点），判断是否达到限流的阀值，未达到则返回true，否则返回false
      */

@@ -1,4 +1,4 @@
-package cn.dijia478.redis5.bean;
+package cn.dijia478.cluster.bean;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

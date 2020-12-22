@@ -1,4 +1,4 @@
-package cn.dijia478.redis5.util;
+package cn.dijia478.cluster.util;
 
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;

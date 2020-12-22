@@ -46,7 +46,7 @@
             <AppenderRef ref="errorLog"/>
         </Root>
 
-        <Logger name="cn.dijia478.redis5.redis.impl" level="${log.sql.level}" additivity="false">
+        <Logger name="cn.dijia478.cluster.redis.impl" level="${log.sql.level}" additivity="false">
             <AppenderRef ref="console"/>
             <AppenderRef ref="errorLog"/>
         </Logger>

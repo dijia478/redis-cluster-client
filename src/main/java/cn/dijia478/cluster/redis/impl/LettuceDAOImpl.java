@@ -1,6 +1,6 @@
-package cn.dijia478.redis5.redis.impl;
+package cn.dijia478.cluster.redis.impl;
 
-import cn.dijia478.redis5.redis.RedisDAO;
+import cn.dijia478.cluster.redis.RedisDAO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
@@ -9,7 +9,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.Map;

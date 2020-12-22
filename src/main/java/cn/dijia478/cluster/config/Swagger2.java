@@ -1,4 +1,4 @@
-package cn.dijia478.redis5.config;
+package cn.dijia478.cluster.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +25,7 @@ public class Swagger2 {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("cn.dijia478.redis5.controller"))
+                .apis(RequestHandlerSelectors.basePackage("cn.dijia478.cluster.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }
@@ -33,7 +33,7 @@ public class Swagger2 {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("redis操作接口文档")
-                .description("这是用来测试redis5-cluster集群的测试接口，可以直接通过接口来操作redis")
+                .description("这是用来测试redis-cluster集群的测试接口，可以直接通过接口来操作redis")
                 .version("1.0")
                 .build();
     }

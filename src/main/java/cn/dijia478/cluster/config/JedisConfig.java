@@ -1,4 +1,4 @@
-package cn.dijia478.redis5.config;
+package cn.dijia478.cluster.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
