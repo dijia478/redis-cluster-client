@@ -146,15 +146,13 @@ public class LettuceDAOImpl implements RedisDAO {
                 rt.expire(key, timeWindow + 1000L, TimeUnit.MILLISECONDS);
                 return true;
             }
-
-            if (nowTime - Long.parseLong(farTime) <= timeWindow) {
-                return false;
-            } else {
+            if (nowTime - Long.parseLong(farTime) > timeWindow) {
                 list.rightPop(key);
                 list.leftPush(key, String.valueOf(nowTime));
                 rt.expire(key, timeWindow + 1000L, TimeUnit.MILLISECONDS);
                 return true;
             }
+            return false;
         } catch (Exception e) {
             log.error("[logId:{}]", logId, e);
             return false;

@@ -108,7 +108,7 @@ public interface RedisDAO {
      * @param key key
      * @param count 限流阀值
      * @param timeWindow 限流时间窗口
-     * @return 在时间窗口内（包含该时间点），判断是否达到限流的阀值，达到了则返回false，否则返回true
+     * @return 在时间窗口内（包含该时间点），判断是否达到限流的阀值，未达到则返回true，否则返回false
      */
     Boolean slideWindow(String logId, String key, int count, long timeWindow);
 

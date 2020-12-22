@@ -142,11 +142,7 @@ public class JedisDAOImpl implements RedisDAO {
             }
 
             // 队列已满（达到限制次数），用当前时间戳 减去 最早添加的时间戳
-            if (nowTime - Long.parseLong(farTime) <= timeWindow) {
-                // 若结果小于等于timeWindow，则说明在timeWindow内，通过的次数大于count
-                // 不允许通过
-                return false;
-            } else {
+            if (nowTime - Long.parseLong(farTime) > timeWindow) {
                 // 若结果大于timeWindow，则说明在timeWindow内，通过的次数小于等于count
                 // 允许通过，并删除最早添加的时间戳，将当前时间添加到队列开始位置
                 jc.rpop(key);
@@ -154,6 +150,9 @@ public class JedisDAOImpl implements RedisDAO {
                 jc.pexpire(key, timeWindow + 1000L);
                 return true;
             }
+            // 若结果小于等于timeWindow，则说明在timeWindow内，通过的次数大于count
+            // 不允许通过
+            return false;
         } catch (Exception e) {
             log.error("[logId:{}]", logId, e);
             return false;
