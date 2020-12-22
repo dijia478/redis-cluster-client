@@ -95,23 +95,33 @@ public class LettuceController {
 
 
     @ApiOperation(value = "获取分布式锁（接口负责人：dijia478）")
-    @PostMapping("/redis/lettuce/lock/{key}/{value}/{expireTime}")
+    @GetMapping("/redis/lettuce/lock/{key}/{value}/{expireTime}")
     public Boolean getLock(@PathVariable("key") String key, @PathVariable("value") String value, @PathVariable("expireTime") long expireTime) {
         String logId = IdTool.getId4();
-        log.info("[logId:{}] receive POST request [/redis/jedis/lock/{}/{}/{}]", logId, key, value, expireTime);
-        Boolean lock = redisDAO.getDistributedLock(logId, key, value, expireTime);
-        log.info("[logId:{}] resp: {}", logId, lock);
-        return lock;
+        log.info("[logId:{}] receive GET request [/redis/lettuce/lock/{}/{}/{}]", logId, key, value, expireTime);
+        Boolean isGetLock = redisDAO.getDistributedLock(logId, key, value, expireTime);
+        log.info("[logId:{}] resp: {}", logId, isGetLock);
+        return isGetLock;
     }
 
     @ApiOperation(value = "释放分布式锁（接口负责人：dijia478）")
     @DeleteMapping("/redis/lettuce/lock/{key}/{value}")
-    public Boolean getLock(@PathVariable("key") String key, @PathVariable("value") String value) {
+    public Boolean releaseLock(@PathVariable("key") String key, @PathVariable("value") String value) {
         String logId = IdTool.getId4();
-        log.info("[logId:{}] receive DELETE request [/redis/jedis/lock/{}/{}]", logId, key, value);
-        Boolean lock = redisDAO.releaseDistributedLock(logId, key, value);
-        log.info("[logId:{}] resp: {}", logId, lock);
-        return lock;
+        log.info("[logId:{}] receive DELETE request [/redis/lettuce/lock/{}/{}]", logId, key, value);
+        Boolean isReleaseLock = redisDAO.releaseDistributedLock(logId, key, value);
+        log.info("[logId:{}] resp: {}", logId, isReleaseLock);
+        return isReleaseLock;
+    }
+
+    @ApiOperation(value = "进行分布式滑动窗口限流，返回是否允许通过（接口负责人：dijia478）")
+    @GetMapping("/redis/lettuce/slideWindow/{key}/{count}/{timeWindow}")
+    public Boolean slideWindow(@PathVariable("key") String key, @PathVariable("count") Integer count, @PathVariable("timeWindow") Long timeWindow) {
+        String logId = IdTool.getId4();
+        log.info("[logId:{}] receive DELETE request [/redis/lettuce/slideWindow/{}/{}/{}]", logId, key, count, timeWindow);
+        Boolean isGo = redisDAO.slideWindow(logId, key, count, timeWindow);
+        log.info("[logId:{}] resp: {}", logId, isGo);
+        return isGo;
     }
 
 }

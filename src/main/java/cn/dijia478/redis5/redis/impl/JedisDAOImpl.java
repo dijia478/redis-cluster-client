@@ -127,4 +127,37 @@ public class JedisDAOImpl implements RedisDAO {
         return Long.valueOf(1L).equals(result);
     }
 
+    @Override
+    public synchronized Boolean slideWindow(String logId, String key, int count, long timeWindow) {
+        try {
+            // 获取当前时间
+            long nowTime = System.currentTimeMillis();
+            // 获取队列中，达到限流数量的位置，存储的时间戳
+            String farTime = jc.lindex(key, count - 1);
+            // 如果为空，说明限流队列还没满，则允许通过，并添加当前时间戳到队列开始位置
+            if (farTime == null) {
+                jc.lpush(key, String.valueOf(nowTime));
+                jc.pexpire(key, timeWindow + 1000L);
+                return true;
+            }
+
+            // 队列已满（达到限制次数），用当前时间戳 减去 最早添加的时间戳
+            if (nowTime - Long.parseLong(farTime) <= timeWindow) {
+                // 若结果小于等于timeWindow，则说明在timeWindow内，通过的次数大于count
+                // 不允许通过
+                return false;
+            } else {
+                // 若结果大于timeWindow，则说明在timeWindow内，通过的次数小于等于count
+                // 允许通过，并删除最早添加的时间戳，将当前时间添加到队列开始位置
+                jc.rpop(key);
+                jc.lpush(key, String.valueOf(nowTime));
+                jc.pexpire(key, timeWindow + 1000L);
+                return true;
+            }
+        } catch (Exception e) {
+            log.error("[logId:{}]", logId, e);
+            return false;
+        }
+    }
+
 }

@@ -100,4 +100,16 @@ public interface RedisDAO {
      */
     Boolean releaseDistributedLock(String logId, String key, String value);
 
+    /**
+     * 分布式限流队列
+     * 本接口实现的方法通过加锁避免并发问题，也可以通过lua脚本的方式重写本接口实现方法
+     *
+     * @param logId 日志id
+     * @param key key
+     * @param count 限流阀值
+     * @param timeWindow 限流时间窗口
+     * @return 在时间窗口内（包含该时间点），判断是否达到限流的阀值，达到了则返回false，否则返回true
+     */
+    Boolean slideWindow(String logId, String key, int count, long timeWindow);
+
 }

@@ -4,10 +4,12 @@ import cn.dijia478.redis5.redis.RedisDAO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.Map;
@@ -131,6 +133,32 @@ public class LettuceDAOImpl implements RedisDAO {
             log.error("[logId:{}] releaseLock redis key: {}, value: {}", logId, key, value, e);
         }
         return Long.valueOf(1L).equals(execute);
+    }
+
+    @Override
+    public synchronized Boolean slideWindow(String logId, String key, int count, long timeWindow) {
+        try {
+            long nowTime = System.currentTimeMillis();
+            ListOperations<String, String> list = rt.opsForList();
+            String farTime = list.index(key, count - 1);
+            if (farTime == null) {
+                list.leftPush(key, String.valueOf(nowTime));
+                rt.expire(key, timeWindow + 1000L, TimeUnit.MILLISECONDS);
+                return true;
+            }
+
+            if (nowTime - Long.parseLong(farTime) <= timeWindow) {
+                return false;
+            } else {
+                list.rightPop(key);
+                list.leftPush(key, String.valueOf(nowTime));
+                rt.expire(key, timeWindow + 1000L, TimeUnit.MILLISECONDS);
+                return true;
+            }
+        } catch (Exception e) {
+            log.error("[logId:{}]", logId, e);
+            return false;
+        }
     }
 
 }
