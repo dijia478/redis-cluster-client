@@ -142,6 +142,7 @@ public class JedisDAOImpl implements RedisDAO {
             // 如果为空，说明限流队列还没满，则允许通过，并添加当前时间戳到队列开始位置
             if (farTime == null) {
                 jc.lpush(key, String.valueOf(nowTime));
+                // 给限流队列增加过期时间，防止长时间不用导致内存一直占用
                 jc.pexpire(key, timeWindow + 1000L);
                 return true;
             }
@@ -152,6 +153,7 @@ public class JedisDAOImpl implements RedisDAO {
                 // 允许通过，并删除最早添加的时间戳，将当前时间添加到队列开始位置
                 jc.rpop(key);
                 jc.lpush(key, String.valueOf(nowTime));
+                // 给限流队列增加过期时间，防止长时间不用导致内存一直占用
                 jc.pexpire(key, timeWindow + 1000L);
                 return true;
             }

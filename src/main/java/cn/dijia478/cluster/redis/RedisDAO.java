@@ -10,10 +10,42 @@ import java.util.Map;
  */
 public interface RedisDAO {
 
-    /** 释放分布式锁时使用的lua脚本，保证原子性 */
-    String RELEASE_LOCK_LUA = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
+    /**
+     * 释放分布式锁时使用的lua脚本，保证原子性
+     *
+     * if (redis.call('get', KEYS[1]) == ARGV[1])
+     * then
+     *   return redis.call('del', KEYS[1])
+     * else
+     *   return 0
+     * end
+     */
+    String RELEASE_LOCK_LUA = "if (redis.call('get', KEYS[1]) == ARGV[1]) then return redis.call('del', KEYS[1]) else return 0 end";
 
-    /** 滑动窗口限流使用的lua脚本，保证原子性 */
+    /**
+     * 滑动窗口限流使用的lua脚本，保证原子性
+     *
+     * local key = KEYS[1];
+     * local index = tonumber(ARGV[1]);
+     * local time_window = tonumber(ARGV[2]);
+     * local now_time = tonumber(ARGV[3]);
+     * local far_time = redis.call('lindex', key, index);
+     * if (not far_time)
+     * then
+     *   redis.call('lpush', key, now_time);
+     *   redis.call('pexpire', key, time_window+1000);
+     *   return 1;
+     * end
+     * if (now_time - far_time > time_window)
+     * then
+     *   redis.call('rpop', key);
+     *   redis.call('lpush', key, now_time);
+     *   redis.call('pexpire', key, time_window+1000);
+     *   return 1;
+     * else
+     *   return 0;
+     * end
+     */
     String SLIDE_WINDOW_LUA = "local key = KEYS[1];\n" + "local index = tonumber(ARGV[1]);\n" + "local time_window = tonumber(ARGV[2]);\n" + "local now_time = tonumber(ARGV[3]);\n" + "local far_time = redis.call('lindex', key, index);\n" + "if (not far_time)\n" + "then\n" + "  redis.call('lpush', key, now_time);\n" + "  redis.call('pexpire', key, time_window+1000);\n" + "  return 1;\n" + "end\n" + "\n" + "if (now_time - far_time > time_window)\n" + "then\n" + "  redis.call('rpop', key);\n" + "  redis.call('lpush', key, now_time);\n" + "  redis.call('pexpire', key, time_window+1000);\n" + "  return 1;\n" + "else\n" + "  return 0;\n" + "end";
 
     /**
