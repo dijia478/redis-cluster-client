@@ -13,6 +13,9 @@ public interface RedisDAO {
     /** 释放分布式锁时使用的lua脚本，保证原子性 */
     String RELEASE_LOCK_LUA = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
 
+    /** 滑动窗口限流使用的lua脚本，保证原子性 */
+    String SLIDE_WINDOW_LUA = "local key = KEYS[1];\n" + "local index = tonumber(ARGV[1]);\n" + "local time_window = tonumber(ARGV[2]);\n" + "local now_time = tonumber(ARGV[3]);\n" + "local far_time = redis.call('lindex', key, index);\n" + "if (not far_time)\n" + "then\n" + "  redis.call('lpush', key, now_time);\n" + "  redis.call('pexpire', key, time_window+1000);\n" + "  return 1;\n" + "end\n" + "\n" + "if (now_time - far_time > time_window)\n" + "then\n" + "  redis.call('rpop', key);\n" + "  redis.call('lpush', key, now_time);\n" + "  redis.call('pexpire', key, time_window+1000);\n" + "  return 1;\n" + "else\n" + "  return 0;\n" + "end";
+
     /**
      * redis中的set方法
      *
@@ -101,15 +104,27 @@ public interface RedisDAO {
     Boolean releaseDistributedLock(String logId, String key, String value);
 
     /**
-     * 分布式限流队列
-     * 本接口实现的方法通过加锁避免并发问题，性能不高。后续通过lua脚本的方式重写本接口实现方法
+     * 分布式限流队列，在时间窗口内（包含该时间点），判断是否达到限流的阀值
+     * 本接口实现的方法通过加锁避免并发问题，性能不高。只是为了说明限流逻辑如何实现
      *
      * @param logId      日志id
      * @param key        key
      * @param count      限流阀值
      * @param timeWindow 限流时间窗口
-     * @return 在时间窗口内（包含该时间点），判断是否达到限流的阀值，未达到则返回true，否则返回false
+     * @return 是否允许通过（通过即不进行限流）
      */
     Boolean slideWindow(String logId, String key, int count, long timeWindow);
+
+    /**
+     * 分布式限流队列，在时间窗口内（包含该时间点），判断是否达到限流的阀值
+     * 本接口实现的方法通过Lua脚本避免并发问题，性能较高。
+     *
+     * @param logId      日志id
+     * @param key        key
+     * @param count      限流阀值
+     * @param timeWindow 限流时间窗口
+     * @return 是否允许通过（通过即不进行限流）
+     */
+    Boolean slideWindowLua(String logId, String key, int count, long timeWindow);
 
 }

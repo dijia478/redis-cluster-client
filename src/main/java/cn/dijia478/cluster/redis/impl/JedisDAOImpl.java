@@ -7,7 +7,9 @@ import org.springframework.stereotype.Repository;
 import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.params.SetParams;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -117,18 +119,21 @@ public class JedisDAOImpl implements RedisDAO {
 
     @Override
     public Boolean releaseDistributedLock(String logId, String key, String value) {
-        Object result = null;
+        Object eval = null;
         try {
-            result = jc.eval(RELEASE_LOCK_LUA, Collections.singletonList(key), Collections.singletonList(value));
-            log.debug("[logId:{}] releaseLock redis key: {}, value: {}, result: {}", logId, key, value, result);
+            eval = jc.eval(RELEASE_LOCK_LUA, Collections.singletonList(key), Collections.singletonList(value));
+            log.debug("[logId:{}] releaseLock redis key: {}, value: {}, result: {}", logId, key, value, eval);
         } catch (Exception e) {
             log.error("[logId:{}] releaseLock redis key: {}, value: {}", logId, key, value, e);
         }
-        return Long.valueOf(1L).equals(result);
+        return Long.valueOf(1L).equals(eval);
     }
 
     @Override
     public synchronized Boolean slideWindow(String logId, String key, int count, long timeWindow) {
+        if (count <= 0 || timeWindow <= 0) {
+            return false;
+        }
         try {
             // 获取当前时间
             long nowTime = System.currentTimeMillis();
@@ -157,6 +162,25 @@ public class JedisDAOImpl implements RedisDAO {
             log.error("[logId:{}]", logId, e);
             return false;
         }
+    }
+
+    @Override
+    public Boolean slideWindowLua(String logId, String key, int count, long timeWindow) {
+        if (count <= 0 || timeWindow <= 0) {
+            return false;
+        }
+        Object eval = null;
+        try {
+            List<String> argvList = new ArrayList<>();
+            argvList.add(String.valueOf(count - 1));
+            argvList.add(String.valueOf(timeWindow));
+            argvList.add(String.valueOf(System.currentTimeMillis()));
+            eval = jc.eval(SLIDE_WINDOW_LUA, Collections.singletonList(key), argvList);
+            log.debug("[logId:{}] slideWindowLua redis key: {}, count: {}, timeWindow: {}, result: {}", logId, key, count, timeWindow, eval);
+        } catch (Exception e) {
+            log.error("[logId:{}] slideWindowLua redis key: {}, count: {}, timeWindow: {}", logId, key, count, timeWindow, e);
+        }
+        return Long.valueOf(1L).equals(eval);
     }
 
 }

@@ -123,4 +123,14 @@ public class LettuceController {
         return isGo;
     }
 
+    @ApiOperation(value = "进行分布式滑动窗口限流（Lua脚本实现），返回是否允许通过（接口负责人：dijia478）")
+    @GetMapping("/redis/lettuce/slideWindowLua/{key}/{count}/{timeWindow}")
+    public Boolean slideWindowLua(@PathVariable("key") String key, @PathVariable("count") Integer count, @PathVariable("timeWindow") Long timeWindow) {
+        String logId = IdTool.getId4();
+        log.info("[logId:{}] receive DELETE request [/redis/lettuce/slideWindowLua/{}/{}/{}]", logId, key, count, timeWindow);
+        Boolean isGo = redisDAO.slideWindowLua(logId, key, count, timeWindow);
+        log.info("[logId:{}] resp: {}", logId, isGo);
+        return isGo;
+    }
+
 }

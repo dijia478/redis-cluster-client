@@ -10,8 +10,7 @@ import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -156,6 +155,22 @@ public class LettuceDAOImpl implements RedisDAO {
             log.error("[logId:{}]", logId, e);
             return false;
         }
+    }
+
+    @Override
+    public Boolean slideWindowLua(String logId, String key, int count, long timeWindow) {
+        if (count <= 0 || timeWindow <= 0) {
+            return false;
+        }
+        Long execute = null;
+        try {
+            RedisScript<Long> redisScript = new DefaultRedisScript<>(SLIDE_WINDOW_LUA, Long.class);
+            execute = rt.execute(redisScript, Collections.singletonList(key), String.valueOf(count - 1), String.valueOf(timeWindow), String.valueOf(System.currentTimeMillis()));
+            log.debug("[logId:{}] slideWindowLua redis key: {}, count: {}, timeWindow: {}, result: {}", logId, key, count, timeWindow, execute);
+        } catch (Exception e) {
+            log.error("[logId:{}] slideWindowLua redis key: {}, count: {}, timeWindow: {}", logId, key, count, timeWindow, e);
+        }
+        return Long.valueOf(1L).equals(execute);
     }
 
 }
